@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: API Previsao
+  datasource:
+    url: jdbc:mysql://localhost:3306/previsao?useUnicode=true&characterEncoding=UTF-8
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 253690
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
