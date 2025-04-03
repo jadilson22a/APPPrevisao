@@ -31,8 +31,14 @@ public class PrevisaoController {
         this.Service.atualizar(id, previsao);
     }
 
-    @GetMapping
+
+    @GetMapping("/pedido")
     public List<Previsao> buscarPedido(@RequestParam("pedido") Integer pedido){
         return this.Service.buscarPedido(pedido);
+    }
+
+    @GetMapping("/cotacao")
+    public List<Previsao> buscarCotacao(@RequestParam("cotacao") Integer cotacao){
+        return this.Service.buscarCotacao(cotacao);
     }
 }

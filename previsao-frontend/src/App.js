@@ -6,7 +6,7 @@ const API_URL = "http://localhost:8080/previsao";
 
 // 🎨 Estilos para o tema escuro
 const Container = styled.div`
-  max-width: 600px;
+  max-width: 800px; /* 🔼 Aumentei a largura */
   margin: 40px auto;
   padding: 20px;
   border-radius: 10px;
@@ -55,13 +55,17 @@ const Button = styled.button`
 
 const ListItem = styled.li`
   list-style: none;
-  padding: 10px;
+  padding: 8px 12px; /* 🔽 Reduzi o padding */
   background: #2e2e2e;
   margin: 5px 0;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-radius: 5px;
-  box-shadow: 0px 2px 5px rgba(255, 255, 255, 0.1);
+  font-size: 14px; /* 🔽 Reduzi um pouco a fonte */
+  white-space: nowrap; /* ⏩ Mantém tudo em uma linha */
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const DeleteButton = styled.button`
@@ -82,42 +86,47 @@ function App() {
   const [previsoes, setPrevisoes] = useState([]);
   const [pedido, setPedido] = useState("");
   const [fornecedor, setFornecedor] = useState("");
+  const [cotacao, setCotacao] = useState("");
   const [dataPrevisao, setDataPrevisao] = useState("");
-  const [pedidoBusca, setPedidoBusca] = useState("");
+  const [cotacaoBusca, setCotacaoBusca] = useState("");
 
-  // 🔍 Buscar previsões só quando o botão for clicado
+  // 🔍 Buscar previsões por cotação
   const buscarPrevisoes = () => {
-    if (!pedidoBusca) {
-      alert("Digite um número de pedido para buscar.");
+    if (!cotacaoBusca) {
+      alert("Digite um número de cotação para buscar.");
       return;
     }
 
     axios
-      .get(`${API_URL}?pedido=${pedidoBusca}`)
+      .get(`${API_URL}/cotacao?cotacao=${cotacaoBusca}`)
       .then((response) => setPrevisoes(response.data))
       .catch((error) => console.error("Erro ao buscar previsões", error));
   };
 
+  // ➕ Adicionar nova previsão
   const adicionarPrevisao = () => {
     axios
       .post(API_URL, {
         pedido: parseInt(pedido),
         fornecedor,
+        cotacao: parseFloat(cotacao),
         previsao: dataPrevisao,
       })
       .then(() => {
         setPedido("");
         setFornecedor("");
+        setCotacao("");
         setDataPrevisao("");
-        buscarPrevisoes(); // Atualiza a lista após adicionar
+        buscarPrevisoes();
       })
       .catch((error) => console.error("Erro ao adicionar previsão", error));
   };
 
+  // ❌ Excluir previsão
   const excluirPrevisao = (id) => {
     axios
       .delete(`${API_URL}?id=${id}`)
-      .then(() => buscarPrevisoes()) // Atualiza a lista
+      .then(() => buscarPrevisoes())
       .catch((error) => console.error("Erro ao excluir previsão", error));
   };
 
@@ -125,16 +134,18 @@ function App() {
     <Container>
       <Title>📅 Gerenciamento de Previsões</Title>
 
+      {/* 🔍 Buscar por Cotação */}
       <div>
         <Input
           type="number"
-          placeholder="🔍 Buscar por Pedido"
-          value={pedidoBusca}
-          onChange={(e) => setPedidoBusca(e.target.value)}
+          placeholder="💰 Buscar por Cotação"
+          value={cotacaoBusca}
+          onChange={(e) => setCotacaoBusca(e.target.value)}
         />
         <Button onClick={buscarPrevisoes}>Buscar</Button>
       </div>
 
+      {/* ➕ Adicionar nova previsão */}
       <div>
         <h3>➕ Adicionar Previsão</h3>
         <Input
@@ -150,6 +161,13 @@ function App() {
           onChange={(e) => setFornecedor(e.target.value)}
         />
         <Input
+          type="number"
+          step="0.01"
+          placeholder="💰 Cotação"
+          value={cotacao}
+          onChange={(e) => setCotacao(e.target.value)}
+        />
+        <Input
           type="date"
           value={dataPrevisao}
           onChange={(e) => setDataPrevisao(e.target.value)}
@@ -157,12 +175,13 @@ function App() {
         <Button onClick={adicionarPrevisao}>Adicionar</Button>
       </div>
 
+      {/* 📋 Lista de Previsões */}
       <h3>📋 Lista de Previsões</h3>
       <ul>
         {previsoes.map((prev) => (
           <ListItem key={prev.id}>
             <span>
-              <strong>Pedido:</strong> {prev.pedido} | <strong>Fornecedor:</strong> {prev.fornecedor} | <strong>Data:</strong> {prev.previsao}
+              <strong>Pedido:</strong> {prev.pedido} | <strong>Fornecedor:</strong> {prev.fornecedor} | <strong>Cotação:</strong> {prev.cotacao} | <strong>Data:</strong> {prev.previsao}
             </span>
             <DeleteButton onClick={() => excluirPrevisao(prev.id)}>X</DeleteButton>
           </ListItem>

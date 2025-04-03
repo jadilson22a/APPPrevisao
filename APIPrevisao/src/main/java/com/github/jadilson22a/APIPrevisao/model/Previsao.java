@@ -22,6 +22,9 @@ public class Previsao {
     @Column(name= "previsao")
     private LocalDate previsao;
 
+    @Column(name= "cotacao")
+    private Integer cotacao;
+
     public Integer getId() {
         return id;
     }
@@ -52,6 +55,14 @@ public class Previsao {
 
     public void setPrevisao(LocalDate previsao) {
         this.previsao = previsao;
+    }
+
+    public Integer getCotacao() {
+        return cotacao;
+    }
+
+    public void setCotacao(Integer cotacao) {
+        this.cotacao = cotacao;
     }
 
     @Override

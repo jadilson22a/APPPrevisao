@@ -31,4 +31,8 @@ public class PrevisaoService {
     public List<Previsao> buscarPedido(Integer pedido){
         return repository.findByPedido(pedido);
     }
+
+    public List<Previsao> buscarCotacao(Integer cotacao){
+        return repository.findByCotacao(cotacao);
+    }
 }

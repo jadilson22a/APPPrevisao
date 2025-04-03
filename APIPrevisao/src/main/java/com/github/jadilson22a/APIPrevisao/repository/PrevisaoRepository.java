@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PrevisaoRepository extends JpaRepository <Previsao, String> {
     List<Previsao> findByPedido(Integer pedido);
+    List<Previsao> findByCotacao(Integer cotacao);
 }
