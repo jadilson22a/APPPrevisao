@@ -6,7 +6,7 @@ const API_URL = "http://localhost:8080/previsao";
 
 // 🎨 Estilos para o tema escuro
 const Container = styled.div`
-  max-width: 800px; /* 🔼 Aumentei a largura */
+  max-width: 700px;
   margin: 40px auto;
   padding: 20px;
   border-radius: 10px;
@@ -53,17 +53,20 @@ const Button = styled.button`
   }
 `;
 
-const ListItem = styled.li`
-  list-style: none;
-  padding: 8px 12px; /* 🔽 Reduzi o padding */
-  background: #2e2e2e;
-  margin: 5px 0;
+const ListContainer = styled.div`
+  margin-top: 20px;
+`;
+
+const ListItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #2e2e2e;
+  padding: 10px;
+  margin: 5px 0;
   border-radius: 5px;
-  font-size: 14px; /* 🔽 Reduzi um pouco a fonte */
-  white-space: nowrap; /* ⏩ Mantém tudo em uma linha */
+  box-shadow: 0px 2px 5px rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
@@ -91,8 +94,8 @@ function App() {
   const [cotacaoBusca, setCotacaoBusca] = useState("");
 
   // 🔍 Buscar previsões por cotação
-  const buscarPrevisoes = () => {
-    if (!cotacaoBusca) {
+  const buscarPrevisoes = (isManual = true) => {
+    if (isManual && !cotacaoBusca) {
       alert("Digite um número de cotação para buscar.");
       return;
     }
@@ -117,7 +120,8 @@ function App() {
         setFornecedor("");
         setCotacao("");
         setDataPrevisao("");
-        buscarPrevisoes();
+
+        buscarPrevisoes(false); // 🔹 Atualiza lista sem mostrar alerta
       })
       .catch((error) => console.error("Erro ao adicionar previsão", error));
   };
@@ -126,7 +130,7 @@ function App() {
   const excluirPrevisao = (id) => {
     axios
       .delete(`${API_URL}?id=${id}`)
-      .then(() => buscarPrevisoes())
+      .then(() => buscarPrevisoes(false)) // 🔹 Atualiza lista sem alerta
       .catch((error) => console.error("Erro ao excluir previsão", error));
   };
 
@@ -136,16 +140,17 @@ function App() {
 
       {/* 🔍 Buscar por Cotação */}
       <div>
+        <h3>💰 Buscar por Cotação</h3>
         <Input
           type="number"
-          placeholder="💰 Buscar por Cotação"
+          placeholder="Digite o número da cotação"
           value={cotacaoBusca}
           onChange={(e) => setCotacaoBusca(e.target.value)}
         />
-        <Button onClick={buscarPrevisoes}>Buscar</Button>
+        <Button onClick={() => buscarPrevisoes(true)}>Buscar</Button>
       </div>
 
-      {/* ➕ Adicionar nova previsão */}
+      {/* ➕ Adicionar Previsão */}
       <div>
         <h3>➕ Adicionar Previsão</h3>
         <Input
@@ -162,7 +167,6 @@ function App() {
         />
         <Input
           type="number"
-          step="0.01"
           placeholder="💰 Cotação"
           value={cotacao}
           onChange={(e) => setCotacao(e.target.value)}
@@ -176,17 +180,21 @@ function App() {
       </div>
 
       {/* 📋 Lista de Previsões */}
-      <h3>📋 Lista de Previsões</h3>
-      <ul>
-        {previsoes.map((prev) => (
-          <ListItem key={prev.id}>
-            <span>
-              <strong>Pedido:</strong> {prev.pedido} | <strong>Fornecedor:</strong> {prev.fornecedor} | <strong>Cotação:</strong> {prev.cotacao} | <strong>Data:</strong> {prev.previsao}
-            </span>
-            <DeleteButton onClick={() => excluirPrevisao(prev.id)}>X</DeleteButton>
-          </ListItem>
-        ))}
-      </ul>
+      <ListContainer>
+        <h3>📋 Lista de Previsões</h3>
+        {previsoes.length === 0 ? (
+          <p>Nenhuma previsão encontrada.</p>
+        ) : (
+          previsoes.map((prev) => (
+            <ListItem key={prev.id}>
+              <span>
+                <strong>Pedido:</strong> {prev.pedido} | <strong>Fornecedor:</strong> {prev.fornecedor} | <strong>Cotação:</strong> {prev.cotacao} | <strong>Data:</strong> {prev.previsao}
+              </span>
+              <DeleteButton onClick={() => excluirPrevisao(prev.id)}>X</DeleteButton>
+            </ListItem>
+          ))
+        )}
+      </ListContainer>
     </Container>
   );
 }
