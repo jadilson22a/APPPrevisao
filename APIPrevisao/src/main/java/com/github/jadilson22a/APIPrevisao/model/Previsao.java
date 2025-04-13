@@ -1,11 +1,15 @@
 package com.github.jadilson22a.APIPrevisao.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name= "previsoes")
+@Getter
+@Setter
 public class Previsao {
 
     @Id
@@ -25,53 +29,4 @@ public class Previsao {
     @Column(name= "cotacao")
     private Integer cotacao;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(Integer pedido) {
-        this.pedido = pedido;
-    }
-
-    public String getFornecedor() {
-        return fornecedor;
-    }
-
-    public void setFornecedor(String fornecedor) {
-        this.fornecedor = fornecedor;
-    }
-
-    public LocalDate getPrevisao() {
-        return previsao;
-    }
-
-    public void setPrevisao(LocalDate previsao) {
-        this.previsao = previsao;
-    }
-
-    public Integer getCotacao() {
-        return cotacao;
-    }
-
-    public void setCotacao(Integer cotacao) {
-        this.cotacao = cotacao;
-    }
-
-    @Override
-    public String toString() {
-        return "Previsao{" +
-                "id=" + id +
-                ", pedido=" + pedido +
-                ", fornecedor='" + fornecedor + '\'' +
-                ", previsao=" + previsao +
-                '}';
-    }
 }
